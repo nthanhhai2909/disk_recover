@@ -8,9 +8,6 @@ RM = rm -f
 
 SRCS := $(wildcard *.h)
 OBJS := $(patsubst %.h,%.o,$(SRCS))
-#TARGETS := $(patsubst %.h,%.so,$(SRCS))
-
-#all: $(TARGETS) main
 
 # if you want to print console uncomment this code below
 all: main run_console_output
@@ -21,7 +18,6 @@ all: main run_console_output
 
 
 %.so:%.o
-#	$(CC) $(INC) $(LDFLAGS) $(CFLAGS) -o $@ $^
 	$(CC) $(INC) $(CFLAGS) -o $@ $^
 
 main: Main.cpp $(OBJS)

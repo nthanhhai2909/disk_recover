@@ -11,7 +11,7 @@ const int BYTE_PER_BOOT_SECTOR = 512;
 Fat::Fat(const vector<uint8_t> &bootSector, std::ifstream &f){
     this->helper = new Helper;
     this->setAttrsFromBootSector(bootSector);
-    this->treeDir = new TreeDIR(".", 0x10, this->get_begin_sector_RDET(), 0, 0, f, this->get_begin_sector_RDET(), this->get_bytes_per_sector(), this->get_begin_sector_data_area(), this->get_sectors_per_cluster());
+    this->treeDir = new TreeDIR(".", 0x10, this->getBeginSectorRDET(), 0, 0, f, this->getBeginSectorRDET(), this->getBytesPerSector(), this->getBeginSectorDataArea(), this->getSectorsPerCluster());
 }
 
 uint16_t Fat::getSectorsOfFAT(){
@@ -27,7 +27,7 @@ uint32_t Fat::getBeginSectorRDET(){
 }
 
 uint8_t Fat::getNumFATTable(){
-    return this->numFatTable
+    return this->numFatTable;
 }
 
 uint32_t Fat::getBeginSectorDataArea(){
@@ -48,10 +48,6 @@ uint32_t Fat::getRDETSize() //sector
 
 uint8_t Fat::getSectorsPerCluster(){
     return this->sectorPerCluter;
-}
-
-uint16_t Fat::getBytesPerSector(){
-    return this->bytePerSector;
 }
 
 
@@ -113,47 +109,48 @@ void Fat::recoverAllFile(std::ifstream &f, const string& pathStore){
     int blockSize = this->sectorPerCluter * this->bytePerSector;
     char * buf = new char[blockSize];
     std::string fullPath;
+    set<std::string> fileNames;
 
     for (int i=0;i<files.size();++i){
-        fullPath = pathStore + "/" + files[i]->getName();
-        f.seekg((this->getBeginSectorDataArea()+(files[i]->getIndexClusterBegin()-2)*this->sectors_per_cluster)*this->bytes_per_sector);
+        fullPath = pathStore + "/" + std::to_string(i) + "_" + files[i]->getName();
+        f.seekg((this->getBeginSectorDataArea()+(files[i]->getIndexClusterBegin()-2)*this->sectorPerCluter)*this->bytePerSector);
         std::ofstream fo(fullPath, std::ios::binary|std::ios::out);
         if (!fo){
-            std::cout << "Create file " << files[i]->getName() << " error! Please, check path!" << std::endl;
+            std::cout << "Create file \"" << files[i]->getName() << "\" error! Please, check path!" << std::endl;
             exit(EXIT_FAILURE);
         }else{
-            std::cout << "Recovering file ..... " << fullPath << std::endl;
+            std::cout << "Recovering file \"" << files[i]->getName() << "\" to file \"" << fullPath << "\"......." << std::endl;
             this->readDataAndWriteToFile(f, fo, files[i]->getSize(), buf, blockSize);
-            std::cout << "Recover to file " << fullPath << " ====> Done." << std::endl;
+            std::cout << "Recover to file " << fullPath << " ====> Done." << std::endl << std::endl;
         }
         fo.close();
     }
     delete buf;
-    std::cout << "Done. All!";
+    std::cout << "Done. All! - Recovered " << files.size() << " files." << std::endl;
 }
 void Fat::recoverFileWithExt(std::ifstream &f, const string& pathStore, const std::string& ext_){
     std::vector<Component*> files = this->treeDir->getListDeletedFileWithExt(ext_);
-    int blockSize = this->sectors_per_cluster * this->bytes_per_sector;
+    int blockSize = this->sectorPerCluter * this->bytePerSector;
     char * buf = new char[blockSize];
     std::string fullPath;
 
     for (int i=0;i<files.size();++i){
-        fullPath = pathStore + "/" + files[i]->getName();
-        f.seekg((this->get_begin_sector_data_area()+(files[i]->getIndexClusterBegin()-2)*this->sectors_per_cluster)*this->bytes_per_sector);
+        fullPath = pathStore + "/" + std::to_string(i) + "_" + files[i]->getName();
+        f.seekg((this->getBeginSectorDataArea()+(files[i]->getIndexClusterBegin()-2)*this->sectorPerCluter)*this->bytePerSector);
         std::ofstream fo(fullPath, std::ios::binary|std::ios::out);
         if (!fo){
-            std::cout << "Create file " << files[i]->getName() << " error! Please, check path!" << std::endl;
+            std::cout << "Create file \"" << files[i]->getName() << "\" error! Please, check path!" << std::endl;
             exit(EXIT_FAILURE);
         }else{
-            std::cout << "Recovering file ..... " << fullPath << std::endl;
+            std::cout << "Recovering file \"" << files[i]->getName() << "\" to file \"" << fullPath << "\"......." << std::endl;
             this->readDataAndWriteToFile(f, fo, files[i]->getSize(), buf, blockSize);
-            std::cout << "Recover to file " << fullPath << " ====> Done." << std::endl;
+            std::cout << "Recover to file \"" << fullPath << "\" ====> Done." << std::endl << std::endl;
         }
         fo.close();
     }
 
     delete buf;
-    std::cout << "Done. All!";
+    std::cout << "Done. All! - Recovered " << files.size() << " files." << std::endl;
 }
 void Fat::listFile(){
     this->treeDir->listFile();

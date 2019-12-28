@@ -4,9 +4,12 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <set>
 #include <string>
 
-#include "Helper/Helper.h"
+#include"Helper.h"
+#include"Component.h"
+#include"TreeDIR.h"
 
 /*
         ** Chu y: thu tu cluster cua vung data bat dau tu 2
@@ -60,7 +63,6 @@ public:
         uint16_t getEntriesOfRDET();
         uint16_t getBytesPerSector();
         uint8_t getSectorsPerCluster();
-        uint16_t getBytesPerSector();
     public:
         void recoverAllFile(std::ifstream &f,const string&);
         void recoverFileWithExt(std::ifstream &f, const string&, const std::string&);

@@ -12,16 +12,18 @@ using namespace std;
 
 class File: public Component {
     private:
-        string filename;
-        char type;
-        uint32_t indexClusterBegin;
-        uint32_t size;
     public:
         File();
         ~File();
         File(const string &name, const char& type_,const uint32_t& clusterBegin, const uint32_t &size_);
+        File(const string &name, const char& type_,const uint32_t& clusterBegin, const uint32_t &size_,const uint32_t &rank_);
     public:
         void show();
+        void listFile();
+        vector<Component*> getListFileWithExt(const std::string&);
+        vector<Component*> getListDeletedFileWithExt(const std::string&);
+        vector<Component*> getAllFiles();
+        vector<Component*> getListDeletedFile();
 };
 
 #endif

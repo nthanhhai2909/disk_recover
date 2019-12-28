@@ -121,10 +121,10 @@ TreeDIR::TreeDIR(const string &name, const char& type_,const uint32_t& clusterBe
 }
 void TreeDIR::show(){
     if (int(this->state) != 0xffffffe5)
-        cout << std::setw(this->rank*3) << "" << "|--" << this->name  << " - Size: " << this->size << endl;
+        cout << std::setw(this->rank*3) << "" << "|--" << this->name  << endl;
     else
     {
-        cout << std::setw(this->rank*3) << "" << "|--" << this->name << " (Deleted)" << " - Size: " << this->size << endl;
+        cout << std::setw(this->rank*3) << "" << "|--" << this->name << " (Deleted)" << endl;
     }
     
     //cout << std::setw(this->rank*3) << "|-" << std::setw(2) << this->type << std::setw(15) << this->size  << std::setw(15) << this->indexClusterBegin << "   " <<this->name << endl;
