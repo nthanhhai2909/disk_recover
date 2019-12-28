@@ -10,7 +10,7 @@ SRCS := $(wildcard *.h)
 OBJS := $(patsubst %.h,%.o,$(SRCS))
 
 # if you want to print console uncomment this code below
-all: main run_console_output
+all: main
 
 
 # if you want to print txt file uncomment this code below
