@@ -4,9 +4,12 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <set>
 #include <string>
 
-#include "Hepler.h"
+#include"Helper.h"
+#include"Component.h"
+#include"TreeDIR.h"
 
 /*
         ** Chu y: thu tu cluster cua vung data bat dau tu 2
@@ -41,26 +44,31 @@ private:
     char fatType[8];
     uint16_t endSectorMarker;
 
+    TreeDIR *treeDir;
+    Helper *helper;
+
 public:
     Fat();
     ~Fat();
-    Fat(const vector<uint8_t> &bootSector);
+    Fat(const vector<uint8_t> &bootSector, std::ifstream &);
     void setAttrsFromBootSector(const vector<uint8_t> &bootSector);
-    void showREETTRee(const vector<uint8_t> &rDET);
-    // int indexOfFile();
 
-public:
-    uint32_t getBeginSectorRDET();
-    uint16_t getSectorsBeforeFATTable();
-    uint16_t getSectorsOfFAT();
-    uint8_t getNumFATTable();
-    uint32_t getBeginSectorDataArea();
-    uint32_t getRDETSize();
-    uint16_t getEntriesOfRDET();
-    uint16_t getBytesPerSector();
-    uint8_t getSectorsPerCluster();
-    uint16_t getBytesPerSector();
-    
+    public:
+        uint32_t getBeginSectorRDET();
+        uint16_t getSectorsBeforeFATTable();
+        uint16_t getSectorsOfFAT();
+        uint8_t getNumFATTable();
+        uint32_t getBeginSectorDataArea();
+        uint32_t getRDETSize();
+        uint16_t getEntriesOfRDET();
+        uint16_t getBytesPerSector();
+        uint8_t getSectorsPerCluster();
+    public:
+        void recoverAllFile(std::ifstream &f,const string&);
+        void recoverFileWithExt(std::ifstream &f, const string&, const std::string&);
+        void readDataAndWriteToFile(std::ifstream & fi, std::ofstream &fo, const uint32_t&, char*, const int &blockSize);
+        void listFile();
+        void tree();
 };
 
 #endif
