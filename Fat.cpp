@@ -14,6 +14,16 @@ Fat::Fat(const vector<uint8_t> &bootSector, std::ifstream &f){
     this->treeDir = new TreeDIR(".", 0x10, this->getBeginSectorRDET(), 0, 0, f, this->getBeginSectorRDET(), this->getBytesPerSector(), this->getBeginSectorDataArea(), this->getSectorsPerCluster());
 }
 
+std::string convertIntToString(int num){
+	std::string result = "";
+	while (num != 0){
+		result += char(48 + num%10);
+		num /= 10;
+	}
+	return result;
+}
+
+
 uint16_t Fat::getSectorsOfFAT(){
     return this->sectorOfFat;
 }
@@ -104,6 +114,8 @@ void Fat::readDataAndWriteToFile(std::ifstream & fi, std::ofstream &fo, const ui
         fo.write(buf, byteOutBlock);
     }
 }
+
+
 void Fat::recoverAllFile(std::ifstream &f, const string& pathStore){
     std::vector<Component*> files = this->treeDir->getListDeletedFile();
     int blockSize = this->sectorPerCluter * this->bytePerSector;
@@ -112,9 +124,9 @@ void Fat::recoverAllFile(std::ifstream &f, const string& pathStore){
     set<std::string> fileNames;
 
     for (int i=0;i<files.size();++i){
-        fullPath = pathStore + "/" + std::to_string(i) + "_" + files[i]->getName();
+        fullPath = pathStore + "/" + convertIntToString(i) + "_" + files[i]->getName();
         f.seekg((this->getBeginSectorDataArea()+(files[i]->getIndexClusterBegin()-2)*this->sectorPerCluter)*this->bytePerSector);
-        std::ofstream fo(fullPath, std::ios::binary|std::ios::out);
+        std::ofstream fo(fullPath.c_str(), std::ios::binary|std::ios::out);
         if (!fo){
             std::cout << "Create file \"" << files[i]->getName() << "\" error! Please, check path!" << std::endl;
             exit(EXIT_FAILURE);
@@ -129,15 +141,18 @@ void Fat::recoverAllFile(std::ifstream &f, const string& pathStore){
     std::cout << "Done. All! - Recovered " << files.size() << " files." << std::endl;
 }
 void Fat::recoverFileWithExt(std::ifstream &f, const string& pathStore, const std::string& ext_){
+
+
+    
     std::vector<Component*> files = this->treeDir->getListDeletedFileWithExt(ext_);
     int blockSize = this->sectorPerCluter * this->bytePerSector;
     char * buf = new char[blockSize];
     std::string fullPath;
 
     for (int i=0;i<files.size();++i){
-        fullPath = pathStore + "/" + std::to_string(i) + "_" + files[i]->getName();
+        fullPath = pathStore + "/" + convertIntToString(i) + "_" + files[i]->getName();
         f.seekg((this->getBeginSectorDataArea()+(files[i]->getIndexClusterBegin()-2)*this->sectorPerCluter)*this->bytePerSector);
-        std::ofstream fo(fullPath, std::ios::binary|std::ios::out);
+        std::ofstream fo(fullPath.c_str(), std::ios::binary|std::ios::out);
         if (!fo){
             std::cout << "Create file \"" << files[i]->getName() << "\" error! Please, check path!" << std::endl;
             exit(EXIT_FAILURE);

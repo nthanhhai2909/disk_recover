@@ -6,10 +6,12 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <stdlib.h>
 
 #include"Helper.h"
 #include"Component.h"
 #include"TreeDIR.h"
+#include <sstream>
 
 /*
         ** Chu y: thu tu cluster cua vung data bat dau tu 2

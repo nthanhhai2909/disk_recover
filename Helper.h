@@ -6,6 +6,7 @@
 #include<fstream>
 #include<vector>
 #include<iomanip>
+#include <stdint.h>
 
 class Helper{
     public:

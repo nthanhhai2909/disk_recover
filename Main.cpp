@@ -3,6 +3,8 @@
 #include <fstream>
 #include "Helper.h"
 #include "Fat.h"
+#include <stdlib.h>
+#include <cstdlib>
 
 using namespace std;
 
@@ -34,7 +36,7 @@ int main()
     helper->covert_char_vec_to_uint8_vec(initData, bootSector);
 
     Fat *fat = new Fat(bootSector, file);
-    
+
     // vector<char> RDETHex(fat->getEntriesOfRDET() * BYTE_PER_RDET_ENTRY);
     // goToSectorOfFile(file, RDETHex, fat->getBeginSectorRDET(), fat->getEntriesOfRDET() * BYTE_PER_RDET_ENTRY);
 
@@ -43,11 +45,11 @@ int main()
     // Nf: so luong ban FAT
     // Srdet: Kich thuoc ROOT DIRECT ENTRY TABLE (SECTOR)
     // K :
-    // S = Sb + Sf*Nf * + [Srdet] + (k-2)*Sc 
+    // S = Sb + Sf*Nf * + [Srdet] + (k-2)*Sc
     // K indxex cluter bat dau cua file (2: cluster duoc danh index tu 2 tro di)
     // Sc: So sector tren mot cluster
 
-    // file.seekg((fat->getBeginSectorDataArea()+(16-2)*fat->getSectorsPerCluster())*fat->getBytesPerSector()); 
+    // file.seekg((fat->getBeginSectorDataArea()+(16-2)*fat->getSectorsPerCluster())*fat->getBytesPerSector());
     // ofstream f("record.pdf", std::ios::binary|std::ios::out);
     // char hexbyte;
     // int sizeFile = 257553;
@@ -57,9 +59,16 @@ int main()
     // }
     // f.close();
 
-
-    std::string ext;    
+    std::string ext;
     char option;
+
+    const int dir_err = system("mkdir -p recoverFolder");
+    if (-1 == dir_err)
+    {
+        printf("Error creating directory!n");
+        exit(1);
+    }
+
     while (true)
     {
         cout << "***************** OPTION *****************" << endl;
@@ -67,7 +76,6 @@ int main()
         cout << "***************** 2: Recover file with ext *******" << endl;
         cout << "***************** 3: show tree *******" << endl;
         cout << "***************** 4: Exist: **************" << endl;
-        
 
         std::cout << "Choose option: ";
         std::cin >> option;
